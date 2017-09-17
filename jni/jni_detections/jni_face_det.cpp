@@ -15,6 +15,7 @@
 #include <jni.h>
 
 
+
 using namespace cv;
 
 extern JNI_VisionDetRet* g_pJNI_VisionDetRet;

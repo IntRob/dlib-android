@@ -27,6 +27,25 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <android/trace.h>
+#include <dlfcn.h>
+//#include <time.h>
+//
+//// from android samples
+///* return current time in milliseconds */
+//static double now_ms(void) {
+//
+//    struct timespec res;
+//    clock_gettime(CLOCK_REALTIME, &res);
+//    return 1000.0 * res.tv_sec + (double) res.tv_nsec / 1e6;
+//
+//}
+
+//typedef void *(*fp_ATrace_beginSection) (const char* sectionName);
+//typedef void *(*fp_ATrace_endSection) (void);
+
+// Native Trace API is supported in API level 23
+
 
 class OpencvHOGDetctor {
  public:
@@ -149,10 +168,19 @@ class DLibHOGFaceDetector : public DLibHOGDetector {
   dlib::shape_predictor msp;
   std::unordered_map<int, dlib::full_object_detection> mFaceShapeMap;
   dlib::frontal_face_detector mFaceDetector;
+//  void *mLib;
 
   inline void init() {
     LOG(INFO) << "Init mFaceDetector";
     mFaceDetector = dlib::get_frontal_face_detector();
+
+//    mLib = dlopen("libandroid.so", RTLD_NOW | RTLD_LOCAL);
+//    if ( mLib != NULL ) {
+//        LOG(INFO) << "Successfully loaded libandroid.so";
+//    }
+//    else {
+//        LOG(INFO) << "Failure loading libandroid.so";
+//    }
   }
 
  public:
@@ -184,10 +212,37 @@ class DLibHOGFaceDetector : public DLibHOGDetector {
       cv::cvtColor(image, image, CV_GRAY2BGR);
     }
     CHECK(image.channels() == 3);
+
+    LOG(INFO) << "end transform GRAY2BGR in det(mat)";
+
     // TODO : Convert to gray image to speed up detection
     // It's unnecessary to use color image for face/landmark detection
     dlib::cv_image<dlib::bgr_pixel> img(image);
+
+    LOG(INFO) << "end dlib::cv_image constructor in det(mat)";
+
+//    void *(*ATrace_beginSection) (const char* sectionName);
+//    void *(*ATrace_endSection) (void);
+//
+//    if ( mLib != NULL )
+//    {
+//        ATrace_beginSection = reinterpret_cast<fp_ATrace_beginSection >(dlsym(mLib, "ATrace_beginSection"));
+//        ATrace_beginSection("dlibFaceDetector");
+//        LOG(INFO) << "Start tracing... ";
+
+//    }
+
+    double startTime = now_ms();
     mRets = mFaceDetector(img);
+    LOG(INFO) << "operator() takes " << now_ms() - startTime << " milliseconds.";
+
+//    if ( mLib != NULL )
+//    {
+//        ATrace_endSection = reinterpret_cast<fp_ATrace_endSection >(dlsym(mLib, "ATrace_endSection"));
+//        ATrace_endSection();
+//        LOG(INFO) << "End tracing... ";
+//    }
+
     LOG(INFO) << "Dlib HOG face det size : " << mRets.size();
     mFaceShapeMap.clear();
     // Process shape

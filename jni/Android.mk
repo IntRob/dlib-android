@@ -14,6 +14,8 @@ LOCAL_SRC_FILES += \
                 ../$(LOCAL_PATH)/../dlib/dlib/threads/threads_kernel_2.cpp
 
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_C_INCLUDES)
+LOCAL_ARM_NEON := true
+
 include $(BUILD_STATIC_LIBRARY)
 
 TOP_LEVEL_PATH := $(abspath $(LOCAL_PATH)/..)

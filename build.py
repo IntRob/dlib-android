@@ -88,7 +88,7 @@ def ndk_clean():
 def setDeviceABI():
     global DEVICE_ABI
     p = subprocess.Popen(
-        ['adb', 'shell', 'getprop', 'ro.product.cpu.abi'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        ['adb', 'shell', 'getprop', ' '], stdin=PIPE, stdout=PIPE, stderr=PIPE)
     output, err = p.communicate(
         b"input data that is passed to subprocess' stdin")
     rc = p.returncode
@@ -173,7 +173,7 @@ def test_cmake():
     NDK_PATH = '/home/darrenl/tools/android-ndk-r10e'
     cmake_cmd = cmake_cmd + ['-DCMAKE_SYSTEM_NAME=Android', '-DCMAKE_SYSTEM_VERSION=21',
                                 '-DCMAKE_ANDROID_ARCH_ABI=' + ABI, '-DCMAKE_ANDROID_STL_TYPE=gnustl_static',
-                                '-DCMAKE_ANDROID_NDK=' + NDK_PATH]
+                                '-DCMAKE_ANDROID_NDK=' + NDK_PATH, '-DANDROID_ARM_NEON=ON']
     cmake_cmd = cmake_cmd + ['-D', 'CMAKE_INSTALL_PREFIX=.']
     cmake_cmd = cmake_cmd + ['..']
     # Print the build command
